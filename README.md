@@ -14,5 +14,5 @@ Wickham’s paper is the main methodological starting point for the repository a
 
 ## References
 
-- Wickham, H. *Tidy Data*. *Journal of Statistical Software* 59(10), 2014. :contentReference[oaicite:4]{index=4}
-- Project description for the WHO/ONT organ donation and transplantation dataset. :contentReference[oaicite:5]{index=5}
+- Wickham, H. *Tidy Data*. *Journal of Statistical Software* 59(10), 2014.
+- Project description for the WHO/ONT organ donation and transplantation dataset.
