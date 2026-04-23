@@ -34,7 +34,8 @@ donor_by_type = df_donors_raw |>
     names_sep = " ",
     values_to = "donors"
   ) |>
-  filter(!is.na(donors))
+  filter(!is.na(donors)
+)|> select(- `TOTAL Actual DD`, - `Total Utilized DD`)
 
 donor_totals_tidy = df_donors_raw |>
   mutate(
