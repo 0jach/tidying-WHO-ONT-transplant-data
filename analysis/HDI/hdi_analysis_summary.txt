@@ -1,0 +1,114 @@
+HDI vs Organ Donation & Transplantation — Analysis Summary
+===========================================================
+
+Datasets used:
+- WHO Global Observatory on Donation and Transplantation (donors_tidy_total.csv, transplant_tidy.csv)
+- UNDP Human Development Index (humandevelopmentindex.csv)
+- 122 countries matched across datasets, covering 2000–2023
+
+HDI tiers used throughout:
+- Low: HDI < 0.55
+- Medium: 0.55 – 0.70
+- High: 0.70 – 0.80
+- Very High: 0.80+
+
+
+1. HDI is a strong predictor of organ donation capacity
+-------------------------------------------------------
+
+Correlation between HDI and deceased donors per million population:
+- Pearson r = 0.62 (p < 0.001)
+- Spearman rho = 0.75 (p < 0.001)
+
+Correlation between HDI and transplants per million population:
+- Pearson r = 0.68 (p < 0.001)
+- Spearman rho = 0.77 (p < 0.001)
+
+The gap between Pearson and Spearman suggests a non-linear relationship:
+donation rates accelerate past a development threshold rather than
+climbing in a straight line.
+
+Median rates by HDI tier:
+- Low:       ~0 donors PMP,   0.5 transplants PMP
+- Medium:    ~0 donors PMP,   3.3 transplants PMP
+- High:     1.7 donors PMP,   8.9 transplants PMP
+- Very High: 13.5 donors PMP, 41.5 transplants PMP
+
+A simple linear model yields:
+donors_pmp = 51.3 * HDI - 32.2
+
+
+2. Living vs. deceased donor shift
+-----------------------------------
+
+Low-HDI countries rely almost entirely on living donors (99.5%).
+As development increases, deceased donation becomes dominant.
+
+Donor source breakdown by HDI tier:
+- Low:       0.5% deceased, 99.5% living
+- Medium:   28.6% deceased, 71.4% living
+- High:     68.4% deceased, 31.6% living
+- Very High: 74.1% deceased, 25.7% living
+
+This reflects the absence of brain-death legislation, intensive care
+infrastructure, and organ procurement organizations in lower-HDI
+countries. Deceased donation unlocks multi-organ retrieval from a
+single donor, which is why transplant volumes scale so much faster
+once that infrastructure is in place.
+
+
+3. Organ diversity increases with development
+----------------------------------------------
+
+Low-HDI countries perform almost exclusively kidney transplants,
+because kidneys can come from living donors with relatively simpler
+surgical infrastructure. As HDI rises, more complex organ transplants
+become feasible.
+
+Organ transplant mix by HDI tier (%):
+- Low:       kidney 92%, liver 8%, lung 0%, pancreas 0%
+- Medium:    kidney 81%, liver 19%, lung 0.5%, pancreas 0.1%
+- High:      kidney 75%, liver 22%, lung 1.2%, pancreas 0.7%
+- Very High: kidney 66%, liver 26%, lung 3.7%, pancreas 2.2%
+
+Lung and pancreas transplants require deceased donors and highly
+specialized surgical teams, which is why they only appear at
+meaningful levels in very high HDI countries.
+
+
+4. Policy matters: overperformers and underperformers
+------------------------------------------------------
+
+A linear regression (donors PMP ~ HDI) reveals countries that
+perform far above or below what their development level predicts.
+
+Top overperformers (more donors than HDI predicts):
+1. Spain         (+26.0 residual)
+2. Portugal      (+16.0)
+3. Croatia       (+13.1)
+4. France        (+11.9)
+5. Belgium       (+11.7)
+6. Belarus        (+9.7)
+7. Austria        (+9.2)
+8. Czechia        (+9.2)
+9. Italy          (+9.0)
+
+Spain's opt-out legislation and dedicated transplant coordination
+model (the "Spanish Model") is the most well-known example of
+policy-driven success in organ donation.
+
+Top underperformers (fewer donors than HDI predicts):
+1. Japan         (-13.8 residual)
+2. UAE           (-11.1)
+3. Singapore     (-11.1)
+4. Brunei         (-9.5)
+5. Kazakhstan     (-9.3)
+6. Barbados       (-9.2)
+7. Qatar          (-9.1)
+8. Oman           (-9.1)
+9. Georgia        (-8.7)
+10. Albania       (-8.4)
+
+Japan and Singapore underperform despite very high HDI, likely due
+to cultural attitudes toward brain death and bodily integrity that
+limit deceased donation consent rates.
