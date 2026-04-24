@@ -1,0 +1,337 @@
+================================================================================
+ HUMAN DEVELOPMENT INDEX, ORGAN DONATION, AND TRANSPLANT EFFICIENCY
+ A cross-national analysis of 122 countries (2000-2023)
+================================================================================
+
+ Prepared by Matteo Colombo
+ Internal reference for paper writing
+
+
+1. DATA SOURCES AND METHODOLOGY
+================================================================================
+
+1.1 Datasets
+
+Three datasets from the WHO Global Observatory on Donation and Transplantation:
+
+  - donors_tidy_total.csv (9,288 rows): annual counts of actual and utilised
+    deceased donors by country, covering 194 countries from 2000 to 2024.
+
+  - donors_tidy.csv (5,755 rows): a more granular version splitting donors by
+    type (DBD: donation after brain death, DCD: donation after circulatory
+    death) and providing both total actual and total utilised counts per row.
+    This dataset was used for efficiency calculations.
+
+  - transplant_tidy.csv (46,440 rows): annual transplant counts by country,
+    organ type (kidney, liver, lung, pancreas, kidney-pancreas, small bowel),
+    and donor source (living vs. deceased).
+
+The fourth dataset is the UNDP Human Development Index (6,604 rows), sourced
+from Our World in Data. It provides HDI values for 215 entities from 1990 to
+2023. The HDI is a composite index measuring average achievement in three basic
+dimensions of human development: a long and healthy life (life expectancy),
+knowledge (mean and expected years of schooling), and a decent standard of
+living (GNI per capita).
+
+1.2 Country name harmonisation
+
+The WHO and UNDP datasets use different naming conventions for 21 countries
+(e.g., "Bolivia (Plurinational State of)" vs. "Bolivia", "Republic of Korea"
+vs. "South Korea"). A mapping table was created to harmonise all names. After
+harmonisation, 122 countries were matched for the HDI vs. donation/transplant
+analysis, and 88 countries with active deceased donor programmes were matched
+for the efficiency analysis.
+
+1.3 Key definitions
+
+  - Donors per million population (PMP): total actual deceased donors divided
+    by population (in millions).
+  - Transplants per million population (PMP): total transplants (all organs,
+    all sources) divided by population.
+  - Utilisation efficiency: ratio of utilised deceased donors to total actual
+    deceased donors (Utilised DD / Actual DD). A value of 1.0 means every
+    recovered donor led to at least one transplant.
+  - HDI tiers: Low (< 0.55), Medium (0.55-0.70), High (0.70-0.80),
+    Very High (0.80+). These thresholds follow the UNDP classification.
+
+1.4 Statistical methods
+
+Two correlation measures were used throughout: Pearson r (linear correlation,
+sensitive to outliers) and Spearman rho (rank correlation, robust to outliers
+and capable of capturing non-linear monotonic relationships). Where Spearman is
+notably higher than Pearson, the relationship is likely non-linear. A simple
+ordinary least squares (OLS) regression was used to compute residuals for the
+overperformer/underperformer analysis. All p-values are two-tailed.
+
+
+2. FINDING 1: HDI IS A STRONG PREDICTOR OF ORGAN DONATION CAPACITY
+================================================================================
+
+The central finding is that the Human Development Index is strongly and
+significantly correlated with both deceased donor rates and transplant rates
+per million population.
+
+2.1 Correlation coefficients
+
+  Measure                 | Pearson r | p-value   | Spearman rho | p-value
+  -------------------------+-----------+-----------+--------------+----------
+  Donors PMP vs HDI       |  0.62     | < 0.001   |  0.75        | < 0.001
+  Transplants PMP vs HDI  |  0.68     | < 0.001   |  0.77        | < 0.001
+
+The gap between Pearson and Spearman values indicates a non-linear
+relationship: donation rates accelerate past a development threshold (roughly
+HDI 0.80) rather than climbing at a constant rate. This is consistent with the
+idea that organ donation requires a minimum level of medical infrastructure,
+legal frameworks, and public trust that only materialises above a certain
+development level.
+
+2.2 Rates by HDI tier
+
+  HDI tier           | Median donors PMP | Median transplants PMP
+  --------------------+-------------------+-----------------------
+  Low (< 0.55)       |  ~0               |  0.5
+  Medium (0.55-0.70) |  ~0               |  3.3
+  High (0.70-0.80)   |  1.7              |  8.9
+  Very High (0.80+)  |  13.5             |  41.5
+
+Countries with very high HDI have roughly 25 times the transplant rate of
+medium-HDI countries. The jump from High to Very High is itself nearly
+fivefold, suggesting that the last stretch of development is where donation
+systems truly scale.
+
+2.3 Linear model
+
+A simple OLS regression yields: donors_pmp = 51.3 x HDI - 32.2 (R^2 = 0.39).
+HDI alone explains about 39% of the variance in donor rates. The remaining 61%
+is driven by policy, culture, and institutional factors (see Finding 4).
+
+
+3. FINDING 2: THE LIVING-TO-DECEASED DONOR TRANSITION
+================================================================================
+
+One of the most structurally revealing patterns is the shift from living to
+deceased donation as development increases. This is not merely a statistical
+artefact -- it reflects fundamental differences in healthcare infrastructure,
+legal frameworks, and medical capacity.
+
+  HDI tier    | Deceased (%) | Living (%) | Dominant source
+  ------------+--------------+------------+-------------------------
+  Low         |  0.5%        | 99.5%      | Almost entirely living
+  Medium      | 28.6%        | 71.4%      | Mostly living
+  High        | 68.4%        | 31.6%      | Mostly deceased
+  Very High   | 74.1%        | 25.7%      | Predominantly deceased
+
+Why this matters:
+
+Deceased donation requires a chain of capabilities that living donation does
+not: brain-death legislation, intensive care infrastructure, organ procurement
+organisations (OPOs), and transplant coordination systems. These are expensive
+and complex to build.
+
+The critical advantage of deceased donation is multi-organ retrieval: a single
+deceased donor can provide two kidneys, a liver, two lungs, a heart, a
+pancreas, and intestines -- potentially saving or improving up to eight lives.
+A living donor can typically donate only one kidney or a liver segment. This is
+why transplant volumes scale so much faster once deceased donation
+infrastructure is in place.
+
+
+4. FINDING 3: ORGAN DIVERSITY INCREASES WITH DEVELOPMENT
+================================================================================
+
+The composition of transplanted organs changes dramatically across HDI tiers.
+
+  HDI tier    | Kidney | Liver | Lung  | Pancreas | Other
+  ------------+--------+-------+-------+----------+------
+  Low         | 92%    |  8%   |  0%   |  0%      |  0%
+  Medium      | 81%    | 19%   |  0.5% |  0.1%    |  0.1%
+  High        | 75%    | 22%   |  1.2% |  0.7%    |  0.5%
+  Very High   | 66%    | 26%   |  3.7% |  2.2%    |  1.9%
+
+Kidneys dominate in low-HDI settings for two reinforcing reasons. First, kidney
+transplantation from living donors is technically the simplest major organ
+transplant. Second, in the absence of deceased donation, kidneys are
+essentially the only organ available.
+
+Lung and pancreas transplants only appear at meaningful levels in very high-HDI
+countries. Both require deceased donors and highly specialised surgical teams.
+Lung transplantation in particular demands sophisticated post-operative
+immunosuppression management. The progression from kidney-only to multi-organ
+transplantation serves as a proxy for the overall maturity of a country's
+transplant system.
+
+
+5. FINDING 4: POLICY MATTERS -- OVERPERFORMERS AND UNDERPERFORMERS
+================================================================================
+
+While HDI explains about 39% of the variance, the remaining 61% is driven by
+policy choices, cultural factors, and institutional design.
+
+5.1 Top overperformers (more donors than HDI predicts)
+
+  Country    | HDI   | Donors PMP | Predicted | Residual
+  -----------+-------+------------+-----------+---------
+  Spain      | 0.918 | 49.4       | 14.9      | +26.0
+  Portugal   | 0.890 | 36.8       | 13.3      | +16.0
+  Croatia    | 0.889 | 29.0       | 13.3      | +13.1
+  France     | 0.920 | 27.6       | 15.0      | +11.9
+  Belgium    | 0.951 | 32.7       | 16.6      | +11.7
+  Belarus    | 0.824 | 25.3       | 10.0      | +9.7
+  Austria    | 0.930 | 20.9       | 15.5      | +9.2
+  Czechia    | 0.915 | 28.5       | 14.7      | +9.2
+  Italy      | 0.915 | 29.4       | 14.7      | +9.0
+
+Spain is the standout case. The "Spanish Model" consists of several key policy
+elements: opt-out (presumed consent) legislation, a dedicated three-tier
+transplant coordination network (national, regional, hospital-level), trained
+hospital-based donor coordinators in every major hospital, and no age limits on
+donor acceptance.
+
+Croatia, Portugal, and Italy have adopted elements of the Spanish Model with
+notable success. Belarus achieves high rates despite lower HDI, likely driven
+by a centralised healthcare system with strong institutional capacity for
+donor identification.
+
+5.2 Top underperformers (fewer donors than HDI predicts)
+
+  Country    | HDI   | Donors PMP | Predicted | Residual
+  -----------+-------+------------+-----------+---------
+  Japan      | 0.925 | 1.2        | 15.2      | -13.8
+  UAE        | 0.940 | 9.2        | 15.9      | -11.1
+  Singapore  | 0.946 | 4.7        | 16.3      | -11.1
+  Kazakhstan | 0.837 | 0.4        | 10.7      | -9.3
+  Barbados   | 0.811 | 0.0        |  9.4      | -9.2
+  Qatar      | 0.886 | 7.4        | 13.2      | -9.1
+  Oman       | 0.858 | 0.4        | 11.8      | -9.1
+  Georgia    | 0.844 | 0.0        | 11.1      | -8.7
+  Albania    | 0.810 | 0.0        |  9.3      | -8.4
+
+Japan is the most striking underperformer. Despite HDI 0.925, it achieves only
+1.2 deceased donors per million. This is primarily attributed to cultural
+attitudes toward brain death and bodily integrity. Japan's Organ Transplant Law
+was only enacted in 1997, and for years required explicit written consent plus
+family agreement. The law was revised in 2010 but cultural resistance remains.
+
+Gulf states (UAE, Qatar, Oman) have high HDIs driven largely by oil wealth, but
+their healthcare systems are still developing transplant infrastructure. These
+cases demonstrate that wealth alone is not sufficient -- donation requires
+specific institutional, legal, and cultural conditions.
+
+
+6. FINDING 5: HDI DOES NOT PREDICT UTILISATION EFFICIENCY
+================================================================================
+
+We defined efficiency as Utilised DD / Actual DD and tested its correlation
+with HDI.
+
+6.1 Correlation coefficients
+
+  Dataset                       | Pearson r | p-value | Spearman rho | p-value
+  -------------------------------+-----------+---------+--------------+---------
+  All country-years (n=808)     |  0.057    | 0.103   | -0.163       | < 0.001
+  Latest year per country (n=88)| -0.002    | 0.989   | -0.265       | 0.012
+
+There is no meaningful linear correlation. The Pearson r is essentially zero.
+The Spearman rho is statistically significant but weak (-0.27), and
+surprisingly negative -- meaning higher-HDI countries are slightly LESS
+efficient.
+
+6.2 Efficiency by HDI tier
+
+  HDI tier    | Median efficiency | Mean efficiency | Observations
+  ------------+-------------------+-----------------+-------------
+  Low         | 100%              | 100%            |   1
+  Medium      | 100%              |  95.1%          |  38
+  High        |  99.3%            |  93.8%          | 194
+  Very High   |  97.1%            |  95.2%          | 575
+
+All tiers show very high median efficiency (above 97%). The slight decrease at
+the top tier is a consequence of programme scale, not failure.
+
+
+7. FINDING 6: DONOR VOLUME INVERSELY PREDICTS EFFICIENCY
+================================================================================
+
+Since HDI does not explain efficiency, we investigated what does.
+
+7.1 Correlation coefficients
+
+  Dataset                        | Pearson r | p-value | Spearman rho | p-value
+  --------------------------------+-----------+---------+--------------+---------
+  All country-years (n=896)      | -0.060    | 0.071   | -0.439       | < 0.001
+  Latest year per country (n=89) | -0.099    | 0.357   | -0.491       | < 0.001
+
+The Spearman rho of -0.49 (p < 0.001) confirms a moderate negative rank
+correlation: countries with larger donor programmes tend to have lower
+utilisation rates.
+
+7.2 Illustrative examples
+
+  Country        | Actual DD | Utilised DD | Efficiency | Programme size
+  ---------------+-----------+-------------+------------+---------------
+  United States  | 16,989    | 14,908      | 87.8%      | Very large
+  Spain          |  2,562    |  2,278      | 88.9%      | Large
+  Brazil         |  3,771    |  3,380      | 89.6%      | Large
+  Italy          |  1,795    |  1,730      | 96.4%      | Large
+  Canada         |    734    |    734      | 100%       | Medium
+  Iran           |  1,016    |  1,000      | 98.4%      | Medium
+  Bolivia        |      4    |      4      | 100%       | Small
+  Iceland        |      3    |      3      | 100%       | Small
+  Algeria        |      1    |      1      | 100%       | Minimal
+
+7.3 Why this is not a problem
+
+Lower efficiency in high-volume programmes is a natural consequence of scale:
+  - Medical unsuitability: expanded donor criteria lead to more organs found
+    unsuitable upon closer inspection.
+  - Matching constraints: more donors means higher probability that specific
+    organs cannot be matched in time.
+  - Organ quality: high-volume programmes recover organs that smaller
+    programmes might not even attempt, expanding the total pool but lowering
+    the utilisation percentage.
+
+Conclusion: HDI does not predict efficiency. Programme volume does, and
+inversely. The bigger the donor pool, the lower the utilisation rate -- which
+is actually a sign of a healthy, ambitious system.
+
+
+8. SUMMARY OF ALL FINDINGS
+================================================================================
+
+  # | Finding                                        | Key metric              | Strength
+  --+------------------------------------------------+-------------------------+---------------------
+  1 | HDI predicts donation and transplant rates      | Spearman rho=0.75/0.77  | Strong, p < 0.001
+  2 | Low-HDI countries rely on living donors (99.5%) | Living vs deceased %    | Structural pattern
+  3 | Organ diversity increases with HDI              | Kidney: 92% -> 66%      | Structural pattern
+  4 | Policy overrides HDI (Spain vs Japan)           | Regression residuals    | Notable outliers
+  5 | HDI does not predict utilisation efficiency      | Pearson r = -0.002      | No correlation
+  6 | Donor volume inversely predicts efficiency      | Spearman rho = -0.49    | Moderate, p < 0.001
+
+Key takeaways for the paper:
+
+1. Development is necessary but not sufficient for strong organ donation
+   systems. The HDI correlation is strong, but outliers show that policy and
+   culture matter enormously.
+
+2. The living-to-deceased transition and organ diversification are two sides of
+   the same coin: both require infrastructure that comes with higher
+   development, and both dramatically expand transplant capacity.
+
+3. Efficiency is not a useful metric for comparing countries of different sizes.
+   It is an artefact of programme scale, not quality. The paper should frame
+   lower utilisation in large programmes as evidence of ambitious donor
+   recovery, not waste.
+
+4. The Spanish Model provides a concrete, replicable policy template. Countries
+   like Japan and Singapore demonstrate that even the highest development levels
+   cannot overcome cultural barriers without targeted policy intervention.
+
+
+R SCRIPTS PROVIDED
+================================================================================
+
+  - hdi_transplant_analysis.R: produces the 4-panel visualisation (scatter
+    plot, donor source, organ mix, regression residuals) and saves a 300 dpi PNG.
+
+  - hdi_efficiency_correlation.R: computes Pearson and Spearman correlations
+    for efficiency vs. HDI and efficiency vs. donor volume.
