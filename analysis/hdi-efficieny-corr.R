@@ -1,7 +1,7 @@
 library(tidyverse)
 
 donors   <- read_csv("donors_tidy.csv")
-hdi_raw  <- read_csv("human-development-index.csv")
+hdi_raw  <- read_csv("humandevelopmentindex.csv")
 
 name_map <- c(
   "Bolivia (Plurinational State of)"           = "Bolivia",
@@ -60,3 +60,18 @@ cat("\n=== Latest year per country ===\n")
 cat("n =", nrow(scatter), "\n")
 cor.test(scatter$HDI, scatter$efficiency, method = "pearson") %>% print()
 cor.test(scatter$HDI, scatter$efficiency, method = "spearman") %>% print()
+
+cat("\n=== Volume vs Efficiency (all country-year obs) ===\n")
+cat("n =", nrow(eff), "\n")
+cor.test(eff$`TOTAL Actual DD`, eff$efficiency, method = "pearson") %>% print()
+cor.test(eff$`TOTAL Actual DD`, eff$efficiency, method = "spearman") %>% print()
+
+scatter_vol <- eff %>%
+  group_by(COUNTRY) %>%
+  slice_max(REPORTYEAR, n = 1) %>%
+  ungroup()
+
+cat("\n=== Volume vs Efficiency (latest year per country) ===\n")
+cat("n =", nrow(scatter_vol), "\n")
+cor.test(scatter_vol$`TOTAL Actual DD`, scatter_vol$efficiency, method = "pearson") %>% print()
+cor.test(scatter_vol$`TOTAL Actual DD`, scatter_vol$efficiency, method = "spearman") %>% print()
