@@ -1,8 +1,9 @@
 library(tidyverse)
 
-donors   <- read_csv("donors_tidy_total.csv")
-trans    <- read_csv("transplant_tidy.csv")
-hdi_raw  <- read_csv("human-development-index.csv")
+
+donors   <- read_csv("./assets/donors_tidy_total.csv")
+trans    <- read_csv("./assets/transplant_tidy.csv")
+hdi_raw  <- read_csv("./assets/human-development-index/human-development-index.csv")
 
 name_map <- c(
   "Bolivia (Plurinational State of)"           = "Bolivia",
@@ -217,7 +218,7 @@ p4 <- ggplot(outliers, aes(x = avg_residual, y = COUNTRY_HDI, fill = group)) +
 library(patchwork)
 
 combined <- (p1 + p2) / (p3 + p4) +
-  plot_annotation(
+  patchwork::plot_annotation(
     title    = "Human Development Index & Organ Donation: 4 Key Findings",
     subtitle = "Data: WHO Global Observatory on Donation and Transplantation + UNDP Human Development Index",
     theme = theme(
@@ -226,7 +227,13 @@ combined <- (p1 + p2) / (p3 + p4) +
     )
   )
 
-ggsave("hdi_transplant_4_findings.png", combined,
+ggsave("./analysis/HDI/hdi_transplant_4_findings.png", combined,
        width = 16, height = 12, dpi = 300, bg = "white")
 
-shell.exec("hdi_transplant_4_findings.png")
+file_to_open = normalizePath("./analysis/HDI/hdi_transplant_4_findings.png")
+
+if (.Platform$OS.type == "windows") { ## pay respect to linux demons
+  shell.exec(file_to_open)
+} else {
+  browseURL(file_to_open)
+}

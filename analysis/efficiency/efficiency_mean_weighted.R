@@ -5,7 +5,7 @@ library(ggrepel)
 library(readr)
 library(scales)
 
-data_path <- "."
+data_path <- "./assets"
 
 donors_tidy_total <- read_csv(
   file.path(data_path, "donors_tidy_total.csv"),

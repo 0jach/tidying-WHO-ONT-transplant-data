@@ -1,7 +1,9 @@
 library(tidyverse)
+library(readr)
 
-donors   <- read_csv("donors_tidy.csv")
-hdi_raw  <- read_csv("humandevelopmentindex.csv")
+donors   <- donor_by_type
+donors_totals <- donor_totals_tidy
+hdi_raw  <- read_csv("./assets/human-development-index/human-development-index.csv")
 
 name_map <- c(
   "Bolivia (Plurinational State of)"           = "Bolivia",
@@ -29,12 +31,14 @@ name_map <- c(
 
 harmonise_name <- function(x) ifelse(x %in% names(name_map), name_map[x], x)
 
-eff <- donors %>%
-  select(COUNTRY, REPORTYEAR, `TOTAL Actual DD`, `Total Utilized DD`) %>%
+
+eff = donor_totals_tidy %>%
+  select(COUNTRY, REPORTYEAR, donor_status, amount) %>%
+  pivot_wider(names_from = donor_status, values_from = amount)%>%
   distinct() %>%
-  filter(!is.na(`TOTAL Actual DD`), !is.na(`Total Utilized DD`), `TOTAL Actual DD` > 0) %>%
+  filter(!is.na(`Actual`), !is.na(`Utilized`), `Actual` > 0) %>%
   mutate(
-    efficiency  = `Total Utilized DD` / `TOTAL Actual DD`,
+    efficiency  = `Utilized` / `Actual`,
     COUNTRY_HDI = harmonise_name(COUNTRY)
   ) %>%
   filter(efficiency <= 1)
@@ -63,8 +67,8 @@ cor.test(scatter$HDI, scatter$efficiency, method = "spearman") %>% print()
 
 cat("\n=== Volume vs Efficiency (all country-year obs) ===\n")
 cat("n =", nrow(eff), "\n")
-cor.test(eff$`TOTAL Actual DD`, eff$efficiency, method = "pearson") %>% print()
-cor.test(eff$`TOTAL Actual DD`, eff$efficiency, method = "spearman") %>% print()
+cor.test(eff$`Actual`, eff$efficiency, method = "pearson") %>% print()
+cor.test(eff$`Actual`, eff$efficiency, method = "spearman") %>% print()
 
 scatter_vol <- eff %>%
   group_by(COUNTRY) %>%
@@ -73,5 +77,5 @@ scatter_vol <- eff %>%
 
 cat("\n=== Volume vs Efficiency (latest year per country) ===\n")
 cat("n =", nrow(scatter_vol), "\n")
-cor.test(scatter_vol$`TOTAL Actual DD`, scatter_vol$efficiency, method = "pearson") %>% print()
-cor.test(scatter_vol$`TOTAL Actual DD`, scatter_vol$efficiency, method = "spearman") %>% print()
+cor.test(scatter_vol$`Actual`, scatter_vol$efficiency, method = "pearson") %>% print()
+cor.test(scatter_vol$`Actual`, scatter_vol$efficiency, method = "spearman") %>% print()
