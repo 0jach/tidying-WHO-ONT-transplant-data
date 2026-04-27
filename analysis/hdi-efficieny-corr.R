@@ -1,8 +1,8 @@
 library(tidyverse)
 library(readr)
 
-donors   <- donor_by_type
-donors_totals <- donor_totals_tidy
+donors   <- read_csv("./assets/donors_tidy.csv")
+donors_totals <- read_csv("./assets/donors_tidy_total.csv")
 hdi_raw  <- read_csv("./assets/human-development-index/human-development-index.csv")
 
 name_map <- c(
@@ -32,7 +32,7 @@ name_map <- c(
 harmonise_name <- function(x) ifelse(x %in% names(name_map), name_map[x], x)
 
 
-eff = donor_totals_tidy %>%
+eff = donors_totals %>%
   select(COUNTRY, REPORTYEAR, donor_status, amount) %>%
   pivot_wider(names_from = donor_status, values_from = amount)%>%
   distinct() %>%

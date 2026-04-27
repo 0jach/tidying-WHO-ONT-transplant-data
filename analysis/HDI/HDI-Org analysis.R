@@ -235,5 +235,5 @@ file_to_open = normalizePath("./analysis/HDI/hdi_transplant_4_findings.png")
 if (.Platform$OS.type == "windows") { ## pay respect to linux demons
   shell.exec(file_to_open)
 } else {
-  browseURL(file_to_open)
+  browseURL(file_to_open) ## opens on browser
 }
