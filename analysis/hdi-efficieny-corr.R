@@ -79,3 +79,4 @@ cat("\n=== Volume vs Efficiency (latest year per country) ===\n")
 cat("n =", nrow(scatter_vol), "\n")
 cor.test(scatter_vol$`Actual`, scatter_vol$efficiency, method = "pearson") %>% print()
 cor.test(scatter_vol$`Actual`, scatter_vol$efficiency, method = "spearman") %>% print()
+
